@@ -42,6 +42,10 @@ app.get("/api/movies/:id", (req, res) => {
   );
   let id = parseInt(req.params.id);
   const movie = movies.find((movie) => movie.id === id);
+
+  if (!movie) {
+    return res.status(404).json({ message: `Movie with this ${id} not found` });
+  }
   res.json(movie);
 });
 
@@ -52,10 +56,9 @@ app.get("/api/movies", (req, res) => {
   );
   let limit = parseInt(req.query.limit);
   if (!isNaN(limit) && limit > 0) {
-    res.send(movies.slice(0, limit));
-  } else {
-    res.json(movies);
+    return res.status(200).send(movies.slice(0, limit));
   }
+  res.status(200).json(movies);
 });
 
 app.listen(PORT, () => {
