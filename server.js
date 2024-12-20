@@ -2,6 +2,7 @@ import express from "express";
 import path, { parse } from "path";
 import { fileURLToPath } from "url"; // require for __dirname
 import fs from "fs";
+import movies from "./routes/movies.js";
 
 // __dirname is not available in ES6 module, so we have to use fileURLToPath
 const __filename = fileURLToPath(import.meta.url);
@@ -34,32 +35,9 @@ app.use((req, res, next) => {
 //   );
 //   res.json(movies);
 // });
+console.log(movies);
 
-// filter with the id
-app.get("/api/movies/:id", (req, res) => {
-  const movies = JSON.parse(
-    fs.readFileSync(path.join(__dirname, "db", "movies.json"))
-  );
-  let id = parseInt(req.params.id);
-  const movie = movies.find((movie) => movie.id === id);
-
-  if (!movie) {
-    return res.status(404).json({ message: `Movie with this ${id} not found` });
-  }
-  res.json(movie);
-});
-
-// add query limit
-app.get("/api/movies", (req, res) => {
-  const movies = JSON.parse(
-    fs.readFileSync(path.join(__dirname, "db", "movies.json"))
-  );
-  let limit = parseInt(req.query.limit);
-  if (!isNaN(limit) && limit > 0) {
-    return res.status(200).send(movies.slice(0, limit));
-  }
-  res.status(200).json(movies);
-});
+app.use("/api/movies", movies);
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
