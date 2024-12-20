@@ -1,5 +1,5 @@
 import express from "express";
-import path from "path";
+import path, { parse } from "path";
 import { fileURLToPath } from "url"; // require for __dirname
 import fs from "fs";
 
@@ -25,14 +25,37 @@ app.use((req, res, next) => {
   }
 });
 
-app.get("/api/movies", (req, res) => {
-  // res.json(path.join(__dirname, "db", "movies.json")); // this code not working because it's not a json object
-  // so we have to read the file and parse it to json because you can't import json file in nodejs
-  // this way will get the json dynamically. older way is to import the json file and send it
+// app.get("/api/movies", (req, res) => {
+//   // res.json(path.join(__dirname, "db", "movies.json")); // this code not working because it's not a json object
+//   // so we have to read the file and parse it to json because you can't import json file in nodejs
+//   // this way will get the json dynamically. older way is to import the json file and send it
+//   const movies = JSON.parse(
+//     fs.readFileSync(path.join(__dirname, "db", "movies.json"))
+//   );
+//   res.json(movies);
+// });
+
+// filter with the id
+app.get("/api/movies/:id", (req, res) => {
   const movies = JSON.parse(
     fs.readFileSync(path.join(__dirname, "db", "movies.json"))
   );
-  res.json(movies);
+  let id = parseInt(req.params.id);
+  const movie = movies.find((movie) => movie.id === id);
+  res.json(movie);
+});
+
+// add query limit
+app.get("/api/movies", (req, res) => {
+  const movies = JSON.parse(
+    fs.readFileSync(path.join(__dirname, "db", "movies.json"))
+  );
+  let limit = parseInt(req.query.limit);
+  if (!isNaN(limit) && limit > 0) {
+    res.send(movies.slice(0, limit));
+  } else {
+    res.json(movies);
+  }
 });
 
 app.listen(PORT, () => {
