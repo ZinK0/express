@@ -25,6 +25,16 @@ app.use((req, res, next) => {
   }
 });
 
+app.get("/api/movies", (req, res) => {
+  // res.json(path.join(__dirname, "db", "movies.json")); // this code not working because it's not a json object
+  // so we have to read the file and parse it to json because you can't import json file in nodejs
+  // this way will get the json dynamically. older way is to import the json file and send it
+  const movies = JSON.parse(
+    fs.readFileSync(path.join(__dirname, "db", "movies.json"))
+  );
+  res.json(movies);
+});
+
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
