@@ -1,6 +1,7 @@
 import express from "express";
 import path from "path";
 import { fileURLToPath } from "url"; // require for __dirname
+import fs from "fs";
 
 // __dirname is not available in ES6 module, so we have to use fileURLToPath
 const __filename = fileURLToPath(import.meta.url);
@@ -8,14 +9,20 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = 3000;
 
-app.get("/", (req, res) => {
-  // you can send with the HTML tags also ans send method is generally use, there are other methods also
-  // res.send("<h1>Hello World!</h1>");
-  res.sendFile(path.join(__dirname, "public", "index.html"));
-});
+app.use(express.static(path.join(__dirname, "public"))); // this will serve the static files from the public folder
 
-app.get("/about", (req, res) => {
-  res.sendFile(__dirname + "/public/about.html");
+// this will serve route auto from the public folder
+app.use((req, res, next) => {
+  const sanitizedPath = req.path.endsWith("/")
+    ? req.path.slice(0, -1)
+    : req.path;
+  const filePath = path.join(__dirname, "public", sanitizedPath + ".html");
+
+  if (req.path !== "/" && fs.existsSync(filePath)) {
+    res.sendFile(filePath);
+  } else {
+    next();
+  }
 });
 
 app.listen(PORT, () => {
