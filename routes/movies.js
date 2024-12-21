@@ -4,13 +4,8 @@ import path from "path";
 import fs from "fs";
 import { fileURLToPath } from "url";
 
-// const __filename = fileURLToPath(import.meta.url);
-// const __dirname = path.dirname(__filename);
-
 // From Node 21.5.0, you can use the following code to get the current directory name
 const __dirname = import.meta.dirname;
-
-// console.log(__dirname);
 
 // filter with the id
 router.get("/:id", (req, res) => {
@@ -30,8 +25,6 @@ router.get("/:id", (req, res) => {
 
 // add query limit
 router.get("/", (req, res) => {
-  // console.log(__dirname);
-
   const movies = JSON.parse(
     fs.readFileSync(path.join(process.cwd(), "db", "movies.json"), {
       encoding: "utf-8",
