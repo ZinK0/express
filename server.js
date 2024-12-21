@@ -35,7 +35,7 @@ app.use((req, res, next) => {
 //   );
 //   res.json(movies);
 // });
-console.log(movies);
+// console.log(movies);
 
 app.use("/api/movies", movies);
 
