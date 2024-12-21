@@ -8,6 +8,10 @@ const __dirname = import.meta.dirname;
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// for parsing post request
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+
 app.use(express.static(path.join(__dirname, "public"))); // this will serve the static files from the public folder
 
 // this will serve route auto from the public folder
