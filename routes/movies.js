@@ -6,6 +6,7 @@ import fs from "fs";
 
 // From Node 21.5.0, you can use the following code to get the current directory name
 const __dirname = import.meta.dirname;
+
 let movies = JSON.parse(
   fs.readFileSync(path.join(process.cwd(), "db", "movies.json"), {
     encoding: "utf-8",

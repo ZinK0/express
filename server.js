@@ -3,6 +3,7 @@ import path, { parse } from "path";
 import { fileURLToPath } from "url"; // require for __dirname
 import fs from "fs";
 import movies from "./routes/movies.js";
+import logger from "./middleware/logger.js";
 
 const __dirname = import.meta.dirname;
 const app = express();
@@ -13,6 +14,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use(express.static(path.join(__dirname, "public"))); // this will serve the static files from the public folder
+
+app.use(logger); // this will log the request method, protocol, host, and originalUrl
 
 // this will serve route auto from the public folder
 app.use((req, res, next) => {
