@@ -14,12 +14,14 @@ let movies = JSON.parse(
 );
 
 // filter with the id
-router.get("/:id", (req, res) => {
+router.get("/:id", (req, res, next) => {
   let id = parseInt(req.params.id);
   const movie = movies.find((movie) => movie.id === id);
 
   if (!movie) {
-    return res.status(404).json({ message: `Movie with this ${id} not found` });
+    // return res.status(404).json({ message: `Movie with this ${id} not found` });
+    const error = new Error(`Movie with this ${id} not found`);
+    return next(error);
   }
   res.json(movie);
 });
