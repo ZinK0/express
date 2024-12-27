@@ -6,7 +6,7 @@ import fs from "fs";
 
 // From Node 21.5.0, you can use the following code to get the current directory name
 const __dirname = import.meta.dirname;
-const movies = JSON.parse(
+let movies = JSON.parse(
   fs.readFileSync(path.join(process.cwd(), "db", "movies.json"), {
     encoding: "utf-8",
   })
@@ -62,6 +62,24 @@ router.put("/:id", (req, res) => {
   movie.director = req.body.director;
   movie.actors = req.body.actors;
   res.status(200).json(movie);
+});
+
+// DELETE Request
+router.delete("/:id", (req, res) => {
+  let id = parseInt(req.params.id);
+  console.log(id);
+
+  let movie = movies.find((movie) => movie.id === id);
+  console.log(movie);
+
+  if (!movie) {
+    return res.status(404).json({ message: `Movie with this ${id} not found` });
+  }
+
+  movies = movies.filter((movie) => movie.id !== id);
+  console.log(movies);
+
+  res.status(200).json(movies);
 });
 
 export default router;
