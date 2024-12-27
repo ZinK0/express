@@ -49,4 +49,19 @@ router.post("/", (req, res) => {
   res.status(201).json(movies);
 });
 
+// PUT Request ( update )
+router.put("/:id", (req, res) => {
+  let id = parseInt(req.params.id);
+  let movie = movies.find((movie) => movie.id === id);
+
+  if (!movie) {
+    return res.status(404).json({ message: `Movie with this ${id} not found` });
+  }
+
+  movie.name = req.body.name;
+  movie.director = req.body.director;
+  movie.actors = req.body.actors;
+  res.status(200).json(movie);
+});
+
 export default router;
