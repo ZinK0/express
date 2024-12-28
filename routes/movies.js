@@ -1,85 +1,31 @@
 import express from "express";
+import {
+  getMovies,
+  getMovie,
+  postMovie,
+  updateMovie,
+  deleteMovie,
+} from "../controllers/moviesController.js";
 const router = express.Router();
-import path from "path";
-import fs from "fs";
+
 // import { fileURLToPath } from "url";
 
 // From Node 21.5.0, you can use the following code to get the current directory name
-const __dirname = import.meta.dirname;
-let movies = JSON.parse(
-  fs.readFileSync(path.join(process.cwd(), "db", "movies.json"), {
-    encoding: "utf-8",
-  })
-);
+// const __dirname = import.meta.dirname;
 
 // filter with the id
-router.get("/:id", (req, res, next) => {
-  let id = parseInt(req.params.id);
-  const movie = movies.find((movie) => movie.id === id);
-
-  if (!movie) {
-    const error = new Error(`Movie with this ${id} not found`);
-    return next(error);
-  }
-  res.json(movie);
-});
+router.get("/:id", getMovie);
 
 // add query limit
-router.get("/", (req, res) => {
-  let limit = parseInt(req.query.limit);
-  if (!isNaN(limit) && limit > 0) {
-    return res.status(200).send(movies.slice(0, limit));
-  }
-  res.status(200).json(movies);
-});
+router.get("/", getMovies);
 
-// for post request
-router.post("/", (req, res, next) => {
-  let newMovie = {
-    id: movies.length + 1,
-    name: req.body.name,
-    director: req.body.director,
-    actors: req.body.actors,
-  };
-
-  if (!newMovie.name || !newMovie.director || !newMovie.actors) {
-    const error = new Error("Please include all fields");
-    return next(error);
-  }
-
-  movies.push(newMovie);
-  res.status(201).json(movies);
-});
+// POST request
+router.post("/", postMovie);
 
 // PUT Request ( update )
-router.put("/:id", (req, res, next) => {
-  let id = parseInt(req.params.id);
-  let movie = movies.find((movie) => movie.id === id);
-
-  if (!movie) {
-    const error = new Error(`Movie with this ${id} not found`);
-    return next(error);
-  }
-
-  movie.name = req.body.name;
-  movie.director = req.body.director;
-  movie.actors = req.body.actors;
-  res.status(200).json(movie);
-});
+router.put("/:id", updateMovie);
 
 // DELETE Request
-router.delete("/:id", (req, res, next) => {
-  let id = parseInt(req.params.id);
-  let movie = movies.find((movie) => movie.id === id);
-
-  if (!movie) {
-    const error = new Error(`Movie with this ${id} not found`);
-    return next(error);
-  }
-
-  movies = movies.filter((movie) => movie.id !== id);
-
-  res.status(200).json(movies);
-});
+router.delete("/:id", deleteMovie);
 
 export default router;
