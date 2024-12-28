@@ -70,8 +70,6 @@ router.put("/:id", (req, res, next) => {
 // DELETE Request
 router.delete("/:id", (req, res, next) => {
   let id = parseInt(req.params.id);
-  console.log(id);
-
   let movie = movies.find((movie) => movie.id === id);
 
   if (!movie) {
