@@ -4,6 +4,7 @@ import { fileURLToPath } from "url"; // require for __dirname
 import fs from "fs";
 import movies from "./routes/movies.js";
 import logger from "./middleware/logger.js";
+import errorHandler from "./middleware/error.js";
 
 const __dirname = import.meta.dirname;
 const app = express();
@@ -32,6 +33,9 @@ app.use((req, res, next) => {
 });
 
 app.use("/api/movies", movies);
+
+// Error Handler
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);

@@ -13,12 +13,13 @@ let movies = JSON.parse(
 );
 
 // filter with the id
-router.get("/:id", (req, res) => {
+router.get("/:id", (req, res, next) => {
   let id = parseInt(req.params.id);
   const movie = movies.find((movie) => movie.id === id);
 
   if (!movie) {
-    return res.status(404).json({ message: `Movie with this ${id} not found` });
+    const error = new Error(`Movie with this ${id} not found`);
+    return next(error);
   }
   res.json(movie);
 });
@@ -33,7 +34,7 @@ router.get("/", (req, res) => {
 });
 
 // for post request
-router.post("/", (req, res) => {
+router.post("/", (req, res, next) => {
   let newMovie = {
     id: movies.length + 1,
     name: req.body.name,
@@ -42,7 +43,8 @@ router.post("/", (req, res) => {
   };
 
   if (!newMovie.name || !newMovie.director || !newMovie.actors) {
-    return res.status(400).json({ message: "Please include all fields" });
+    const error = new Error("Please include all fields");
+    return next(error);
   }
 
   movies.push(newMovie);
@@ -50,12 +52,13 @@ router.post("/", (req, res) => {
 });
 
 // PUT Request ( update )
-router.put("/:id", (req, res) => {
+router.put("/:id", (req, res, next) => {
   let id = parseInt(req.params.id);
   let movie = movies.find((movie) => movie.id === id);
 
   if (!movie) {
-    return res.status(404).json({ message: `Movie with this ${id} not found` });
+    const error = new Error(`Movie with this ${id} not found`);
+    return next(error);
   }
 
   movie.name = req.body.name;
@@ -65,19 +68,18 @@ router.put("/:id", (req, res) => {
 });
 
 // DELETE Request
-router.delete("/:id", (req, res) => {
+router.delete("/:id", (req, res, next) => {
   let id = parseInt(req.params.id);
   console.log(id);
 
   let movie = movies.find((movie) => movie.id === id);
-  console.log(movie);
 
   if (!movie) {
-    return res.status(404).json({ message: `Movie with this ${id} not found` });
+    const error = new Error(`Movie with this ${id} not found`);
+    return next(error);
   }
 
   movies = movies.filter((movie) => movie.id !== id);
-  console.log(movies);
 
   res.status(200).json(movies);
 });
